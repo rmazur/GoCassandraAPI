@@ -1,0 +1,61 @@
+version: '2.1'
+
+services:
+
+######## Cassandra init ########
+  cassandraapi-init:
+    image: cassandra
+    container_name: cassandraapi-init
+    ##depends_on:
+      ##- "cassandraapi"
+    volumes:
+      - ./compose-resources/cassandra:/init/scripts
+    command: ["/init/scripts/cassandra-init.sh"]
+    ##command: ["/init/scripts/wait-for-it.sh -t 0", "cassandraapi:9042", "--", "echo", "Hello! done!"]
+    ##command: ["echo", "This is an echo!"]
+    ##ports:
+      ##- '9042:9042'
+    links:
+      - cassandraapi:cassandraapi
+    restart: on-failure # Restart until we successfully run this script (it will fail until cassandra starts)
+    ##tty: true
+    networks:
+      - dockernet
+
+######## CASSANDRA ########
+  cassandraapi:
+    image: cassandra
+    container_name: cassandraapi
+    ##environment:
+      ##CASSANDRA_LISTEN_ADDRESS: '172.20.0.2'
+    ports:
+      ##- '7000:7000'
+      ##- '7001:7001'
+      - '9042:9042'
+      ##- '9160:9160'
+    networks:
+      dockernet:
+        ipv4_address: 172.20.0.2
+
+######## Go ########
+  gorestapi:
+    image: gocassandraapi
+    container_name: gorestapi
+    ports:
+      - '6060:8080'
+    links:
+      - cassandraapi:cassandraapi
+    restart: always
+    networks:
+      dockernet:
+        ipv4_address: 172.20.0.10
+
+######## Network ########
+networks:
+    dockernet:
+        driver: bridge
+        ipam:
+          driver: default
+          config:
+            - subnet: 172.20.0.0/16
+              gateway: 172.20.0.1
