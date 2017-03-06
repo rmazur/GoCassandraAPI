@@ -41,6 +41,8 @@ services:
   gorestapi:
     image: gocassandraapi
     container_name: gorestapi
+    volumes:
+       - db_data:/var/lib/cassandra
     ports:
       - '6060:8080'
     links:
@@ -59,3 +61,7 @@ networks:
           config:
             - subnet: 172.20.0.0/16
               gateway: 172.20.0.1
+
+######## Data Persistence ########
+volumes:
+    db_data:
