@@ -2,7 +2,8 @@ package Cassandra
 
 import (
 	"fmt"
-
+	"os"
+	
 	"github.com/gocql/gocql"
 )
 
