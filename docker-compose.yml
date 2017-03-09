@@ -26,13 +26,15 @@ services:
   cassandraapi:
     image: cassandra
     container_name: cassandraapi
-    ##environment:
-      ##CASSANDRA_LISTEN_ADDRESS: '172.20.0.2'
+    environment:
+      CASSANDRA_BROADCAST_ADDRESS: '172.20.0.2'
     ports:
-      ##- '7000:7000'
-      ##- '7001:7001'
+      - '7000:7000'
+      - '7001:7001'
       - '9042:9042'
-      ##- '9160:9160'
+      - '9160:9160'
+    volumes:
+       - ./cassdata:/var/lib/cassandra
     networks:
       dockernet:
         ipv4_address: 172.20.0.2
@@ -42,9 +44,7 @@ services:
     image: gocassandraapi
     container_name: gorestapi
     environment:
-      CASSANDRA_LISTEN_ADDRESS: '172.20.0.2'
-    volumes:
-       - cassdb_data:/var/lib/cassandra
+      CASSANDRA_DB_IP: '172.20.0.2'
     ports:
       - '6060:8080'
     links:
@@ -65,7 +65,7 @@ networks:
               gateway: 172.20.0.1
 
 ######## Data Persistence ########
-volumes:
-    cassdb_data:
-        external:
-            name: cassdb_data
+##volumes:
+   ##cassdb_data:
+        ##external:
+            ##name: cassdb_data
