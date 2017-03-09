@@ -14,7 +14,7 @@ func init() {
 	var err error
 
 	//cluster := gocql.NewCluster("172.20.0.2")
-	cluster := gocql.NewCluster(os.Getenv("CASSANDRA_LISTEN_ADDRESS"))
+	cluster := gocql.NewCluster(os.Getenv("CASSANDRA_DB_IP"))
 	cluster.Port = 9042
 	cluster.Keyspace = "microservpoc"
 	Session, err = cluster.CreateSession()
